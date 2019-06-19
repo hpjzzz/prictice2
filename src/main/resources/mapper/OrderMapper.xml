@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.test.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="cn.test.pojo.Order">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_num" jdbcType="BIGINT" property="orderNum" />
+    <result column="delivery_date" jdbcType="DATE" property="deliveryDate" />
+    <result column="consignor_num" jdbcType="VARCHAR" property="consignorNum" />
+    <result column="consignor_name" jdbcType="VARCHAR" property="consignorName" />
+    <result column="provider_num" jdbcType="VARCHAR" property="providerNum" />
+    <result column="provider_name" jdbcType="VARCHAR" property="providerName" />
+    <result column="total_num" jdbcType="BIGINT" property="totalNum" />
+    <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
+    <result column="gmt_creat" jdbcType="TIMESTAMP" property="gmtCreat" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_num, delivery_date, consignor_num, consignor_name, provider_num, provider_name, 
+    total_num, total_price, gmt_creat, gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getAllOrder" parameterType="cn.test.pojo.Order" resultMap="BaseResultMap">
+    select* from t_order
+  </select>
+  <select id="search" parameterType="cn.test.pojo.Order" resultMap="BaseResultMap">
+    select * from t_order
+    <where>
+      <if test="orderNum != null and orderNum != '' ">
+        order_num like concat('%',#{orderNum},'%')
+      </if>
+      <if test="consignorNum != null and consignorNum != '' ">
+        consignor_num like concat('%',#{consignorNum},'%')
+      </if>
+      <if test="providerNum != null and providerNum != '' ">
+        provider_num like concat('%',#{providerNum},'%')
+      </if>
+      <!--<if test="gmtCreat != null and gmtCreat != '' ">-->
+        <!--<![CDATA[  and DATE_FORMAT(gmt_creat, '%Y-%m-%d %T:%i:%s') >= DATE_FORMAT(#{gmtCreat}, '%Y-%m-%d %T:%i:%s')   ]]>-->
+      <!--</if>-->
+      <!--<if test="deliveryDate != null and deliveryDate != '' ">-->
+        <!--<![CDATA[  and DATE_FORMAT(gmt_creat, '%Y-%m-%d') <= DATE_FORMAT(#{deliveryDate}, '%Y-%m-%d')   ]]>-->
+      <!--</if>-->
+    </where>
+  </select>
+</mapper>

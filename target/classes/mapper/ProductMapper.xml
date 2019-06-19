@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.test.dao.ProductMapper">
+  <resultMap id="BaseResultMap" type="cn.test.pojo.Product">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_num" jdbcType="BIGINT" property="productNum" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="gmt_creat" jdbcType="TIMESTAMP" property="gmtCreat" />
+    <result column="gmt_modifiled" jdbcType="TIMESTAMP" property="gmtModifiled" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_num, product_name, product_price, gmt_creat, gmt_modifiled
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getAllProduct" parameterType="cn.test.pojo.Product" resultMap="BaseResultMap">
+    select* from t_product
+  </select>
+  <select id="addOne" parameterType="cn.test.pojo.Product" resultMap="BaseResultMap">
+    insert into t_product(id, product_num, product_name, product_price)
+    values (#{id},#{productNum},#{productName},#{productPrice})
+  </select>
+
+  <select id="search" parameterType="cn.test.pojo.Product" resultMap="BaseResultMap">
+    select * from t_product order by product_num
+    <where>
+     <!--添加if条件如果参数为空则不拼接sql-->
+      <if test="productNum != null and productNum != '' ">
+       product_num like concat('%',#{productNum},'%')
+       </if>
+       <if test="productName != null and productName != '' ">
+        and product_name like concat('%',#{productName},'%')
+        </if>
+          </where>
+  </select>
+  <!--List<Product> loadByQuery(ProductQuery productQuery);-->
+  <select id="loadByQuery" parameterType="cn.test.query.ProductQuery" resultMap="BaseResultMap">
+    select * from t_product
+  </select>
+</mapper>
